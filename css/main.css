@@ -1,0 +1,114 @@
+[data-role=bootstrap-edit]
+{
+    margin: 128px auto 0 auto;
+}
+
+[data-role=bootstrap-edit]:not(.preview) .row
+{
+    position: relative;
+    margin-top: 64px;
+}
+
+i.button
+{
+    background-color: white;
+    color: black;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+/*
+    DEBUG VIEW
+ */
+
+[data-role=bootstrap-edit]:not(.preview) .row
+{
+    border: 1px dotted green;
+    padding: 1px;
+}
+
+[data-role=bootstrap-edit]:not(.preview) [class^=col]
+{
+    border: 1px dashed blue;
+}
+
+/*
+    MAIN CONTROL PANEL
+ */
+[data-role=bootstrap-edit-main-control-panel]
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    background-color: #4286f4;
+    padding: 2px 16px;
+    opacity: 0.3;
+    font-size: 0.7em;
+    transition: opacity 0.2s;
+}
+
+/*
+    ROW CONTROL PANEL
+ */
+
+[data-role=bootstrap-edit-row-control-panel]
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%) translateY(-200%);
+    display: block;
+    background-color: #4286f4;
+    padding: 2px 16px;
+    opacity: 0.3;
+    font-size: 0.7em;
+    border-radius: 6px;
+    transition: opacity 0.2s;
+}
+
+[data-role=bootstrap-edit-row-control-panel]:hover
+{
+    opacity: 1;
+}
+
+[data-role=bootstrap-edit].preview [data-role=bootstrap-edit-row-control-panel]
+{
+    display: none;
+}
+
+/**
+    COLUMN CONTROL PANEL
+ */
+
+[data-role=bootstrap-edit-col-control-panel]
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-100%);
+    display: block;
+    background-color: #4286f4;
+    padding: 2px 16px;
+    opacity: 0.3;
+    font-size: 0.7em;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    transition: opacity 0.2s;
+}
+
+[data-role=bootstrap-edit-col-control-panel]:hover
+{
+    opacity: 1;
+}
+
+[data-role=bootstrap-edit].preview [data-role=bootstrap-edit-col-control-panel]
+{
+    display: none;
+}
