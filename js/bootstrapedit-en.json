@@ -1,0 +1,18 @@
+{
+    "addcolumn": "Add column",
+    "addrow": "Add new row",
+    "moveup": "Move up",
+    "movedown": "Move down",
+    "moveleft": "Move left",
+    "moveright": "Move right",
+    "remove": "Remove",
+    "shrink": "Shrink",
+    "grow": "Grow",
+    "newcolumn": "New column",
+    "sizedesktop": "Desktop",
+    "sizesmallerdisplay": "Smaller display",
+    "sizetablet": "Tablet",
+    "sizemobile": "Mobile",
+    "preview": "Preview",
+    "gethtml": "Get HTML"
+}

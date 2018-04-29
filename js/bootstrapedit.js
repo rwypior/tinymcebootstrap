@@ -1,4 +1,10 @@
 (function($) {
+    /**
+     * Initialize tinymce editor for Bootstrap grid
+     * @param {*} options 
+     *   lang: Path to language JSON
+     *   tinymceoptions: Object containing TinyMCE options. Target parameter is set automatically.
+     */
     $.fn.bootstrapeditor = function(options) {
 
         const MODE_DESKTOP = 1;
@@ -16,7 +22,29 @@
         const DIR_UP = -2;
         const DIR_DOWN = 2;
 
+        const DEFAULT_OPTIONS = {
+            "lang": "assets/js/bootstrapedit-en.json",
+            "tinymceoptions": {
+                inline: true
+            }
+        };
+
+        const OPTIONS_LANG = "lang";
+
         let currentMode = MODE_DESKTOP;
+        let dict = null;
+
+        function getHtml()
+        {
+            let $clone = $editElements.clone();
+            $clone.find(".mce-content-body").children().unwrap();
+            $clone.find("[data-role=bootstrap-edit-main-control-panel]").remove();
+            $clone.find("[data-role=bootstrap-edit-col-control-panel]").remove();
+            $clone.find("[data-role=bootstrap-edit-row-control-panel]").remove();
+            let html = $clone.html();
+
+            return html;
+        }
 
         function translateSize(size)
         {
@@ -51,10 +79,11 @@
         function setupRow($row)
         {
             let $controlPanelRow = $("<div data-role='bootstrap-edit-row-control-panel'></div>");
-            let $addcolumn = $("<i class='button' title='Add column'>+</i>");
-            let $rowmoveup = $("<i class='button' title='Move up'>^</i>");
-            let $rowmovedown = $("<i class='button' title='Move down'>v</i>");
-            let $rowremove = $("<i class='button' title='Remove'>x</i>");
+
+            let $addcolumn = $('<i class="bootstrap-edit-button" title="' + dict.addcolumn + '"><i class="fas fa-plus-circle"></i></i>');
+            let $rowmoveup = $('<i class="bootstrap-edit-button" title="' + dict.moveup + '"><i class="fas fa-caret-square-up"></i></i>');
+            let $rowmovedown = $('<i class="bootstrap-edit-button" title="' + dict.movedown + '"><i class="fas fa-caret-square-down"></i></i>');
+            let $rowremove = $('<i class="bootstrap-edit-button" title="' + dict.remove + '"><i class="fas fa-trash-alt"></i>');
 
             $addcolumn.click(function() {
                 createColumn($(this).closest(".row"));
@@ -98,12 +127,12 @@
             if (!findSizeClass($column, MODE_MOBILE))
                 $column.addClass("col-xs-12");
 
-            let $controlPanelCol = $("<div data-role='bootstrap-edit-col-control-panel'></div>");
-            let $downsize = $("<i class='button' title='Shrink'>-</i>");
-            let $upsize = $("<i class='button' title='Grow'>+</i>");
-            let $colmoveleft = $("<i class='button' title='Move left'>\<</i>");
-            let $colmoveright = $("<i class='button' title='Move right'>\></i>");
-            let $colremove = $("<i class='button' title='Remove'>x</i>");
+            let $controlPanelCol = $('<div data-role="bootstrap-edit-col-control-panel"></div>');
+            let $downsize = $('<i class="bootstrap-edit-button" title="' + dict.shrink + '"><i class="fas fa-minus-square"></i></i>');
+            let $upsize = $('<i class="bootstrap-edit-button" title="' + dict.grow + '"><i class="fas fa-plus-square"></i></i>');
+            let $colmoveleft = $('<i class="bootstrap-edit-button" title="' + dict.moveleft + '"><i class="fas fa-caret-square-left"></i></i>');
+            let $colmoveright = $('<i class="bootstrap-edit-button" title="' + dict.moveright + '"><i class="fas fa-caret-square-right"></i></i>');
+            let $colremove = $('<i class="bootstrap-edit-button" title="' + dict.remove + '"><i class="fas fa-trash-alt"></i></i>');
 
             $downsize.click(function() {
                 resizeCol(-1, $(this).closest("[class^=col]"));
@@ -141,14 +170,15 @@
 
         function setupTinymce($column)
         {
-            tinymce.init({
-                target: $column.get(0),
-                inline: true
-            });
+            let tinymceoptions = options.tinymceoptions;
+            tinymceoptions.target = $column.get(0);
+
+            tinymce.init(tinymceoptions);
         }
 
         function disableEditor()
         {
+            //@TODO - finish this
             let $columns = $editElements.find("[class^=col]");
             $columns.each(function(i,e) {
                 var $col = $(e);
@@ -222,28 +252,28 @@
         {
             currentMode = parseInt(newMode);
 
-            $container.removeClass("preview-xs");
-            $container.removeClass("preview-sm");
-            $container.removeClass("preview-md");
-            $container.removeClass("preview-lg");
+            $container.removeClass("bootstrap-edit-preview-xs");
+            $container.removeClass("bootstrap-edit-preview-sm");
+            $container.removeClass("bootstrap-edit-preview-md");
+            $container.removeClass("bootstrap-edit-preview-lg");
 
             switch(currentMode)
             {
                 case MODE_DESKTOP:
                     $container.css("width", SIZE_DESKTOP);
-                    $containerasd.addClass("preview-lg");
+                    $container.addClass("bootstrap-edit-preview-lg");
                     break;
                 case MODE_DESKTOP_SMALL:
                     $container.css("width", SIZE_DESKTOP_SMALL);
-                    $container.addClass("preview-md");
+                    $container.addClass("bootstrap-edit-preview-md");
                     break;
                 case MODE_TABLET:
                     $container.css("width", SIZE_TABLET);
-                    $container.addClass("preview-sm");
+                    $container.addClass("bootstrap-edit-preview-sm");
                     break;
                 case MODE_MOBILE:
                     $container.css("width", SIZE_MOBILE);
-                    $container.addClass("preview-xs");
+                    $container.addClass("bootstrap-edit-preview-xs");
                     break;
             }
         }
@@ -306,7 +336,7 @@
 
         function createColumn($row)
         {
-            let $col = $("<div>New column</div>");
+            let $col = $("<div>" + dict.newcolumn + "</div>");
             setupColumn($col);
             $row.append($col);
         }
@@ -314,58 +344,112 @@
         function enablePreview()
         {
             disableEditor();
-            $editElements.addClass("preview");
+            $editElements.addClass("bootstrap-edit-preview");
         }
 
         function disablePreview()
         {
-            $editElements.removeClass("preview");
+            $editElements.removeClass("bootstrap-edit-preview");
+        }
+
+        function loadLangFile(lang, complete)
+        {
+            $.ajax({
+                method: "GET",
+                url: lang,
+                dataType: "json",
+                success: function(res) {
+                    dict = res;
+                    if (complete != undefined)
+                        complete();
+                },
+                error: function() {
+                    console.error("Could not load language file \"" + lang + "\". Loading aborted.");
+                }
+            });
+        }
+
+        function isset(obj, property)
+        {
+            return typeof obj[property] !== 'undefined';
+        }
+
+        if (options == undefined)
+            options = DEFAULT_OPTIONS;
+        else
+        {
+            for (var optidx in DEFAULT_OPTIONS)
+            {
+                if (!isset(options, optidx))
+                    options[optidx] = DEFAULT_OPTIONS[optidx];
+            }
         }
 
         let $editElements = this;
-        let $container = $editElements.find(".container");
 
-        let $controlPanelMain = $("<div data-role='bootstrap-edit-main-control-panel'></div>");
-        let $controlPanelMode = $("<select>" +
-            "<option value='" + MODE_DESKTOP + "'>Desktop</option>" +
-            "<option value='" + MODE_DESKTOP_SMALL + "'>Smaller display</option>" +
-            "<option value='" + MODE_TABLET + "'>Tablet</option>" +
-            "<option value='" + MODE_MOBILE + "'>Mobile</option>" +
-            "</select>");
-        let $addnewrow = $("<i class='button'>+</i>");
-        let $togglepreview = $("<label>Preview: <input type='checkbox'></label>");
+        loadLangFile(options[OPTIONS_LANG], function() {
 
-        $controlPanelMode.change(function() {
-            changeMode($editElements, $(this).val());
-        });
-
-        $addnewrow.click(function() {
-            createRow($container);
-        });
-
-        $togglepreview.find("input").change(function() {
-            let on = $(this).is(":checked");
-            if (on)
-                enablePreview();
-            else
-                disablePreview();
-        });
-
-        $controlPanelMain.append($controlPanelMode);
-        $controlPanelMain.append($addnewrow);
-        $controlPanelMain.append($togglepreview);
-
-        $editElements.prepend($controlPanelMain);
-
-        $editElements.each(function(iEdit,eEdit) {
-            let $editElement = $(eEdit);
-            let $rows = $editElement.find(".row");
-
-            $rows.each(function(iRow, eRow) {
-                let $row = $(eRow);
-
-                setupRow($row);
+            let $container = $editElements.find(".container");
+    
+            let $controlPanelMain = $("<div data-role='bootstrap-edit-main-control-panel'></div>");
+            let $controlPanelMode = $("<select>" +
+                "<option value='" + MODE_DESKTOP + "'>" + dict.sizedesktop + "</option>" +
+                "<option value='" + MODE_DESKTOP_SMALL + "'>" + dict.sizesmallerdisplay + "</option>" +
+                "<option value='" + MODE_TABLET + "'>" + dict.sizetablet + "</option>" +
+                "<option value='" + MODE_MOBILE + "'>" + dict.sizemobile + "</option>" +
+                "</select>");
+            let $addnewrow = $('<i class="bootstrap-edit-button" title="' + dict.addrow + '"><i class="fas fa-plus-circle"></i></i>');
+            let $togglepreview = $("<label><span>" + dict.preview + ":</span> <input type='checkbox'></label>");
+            let $getHtml = $('<i class="bootstrap-edit-button" title="' + dict.gethtml + '"><i class="fas fa-code"></i></i>');
+    
+            $controlPanelMode.change(function() {
+                changeMode($editElements, $(this).val());
             });
+            changeMode($editElements, MODE_DESKTOP);
+    
+            $addnewrow.click(function() {
+                createRow($container);
+            });
+    
+            $togglepreview.find("input").change(function() {
+                let on = $(this).is(":checked");
+                if (on)
+                    enablePreview();
+                else
+                    disablePreview();
+            });
+    
+            $getHtml.click(function() {
+                let html = getHtml();
+                console.log("Clean HTML output:");
+                console.log("======================");
+                console.log(html);
+                console.log("======================");
+            });
+    
+            $controlPanelMain.append($controlPanelMode);
+            $controlPanelMain.append($addnewrow);
+            $controlPanelMain.append($togglepreview);
+            $controlPanelMain.append($getHtml);
+    
+            $editElements.prepend($controlPanelMain);
+    
+            $editElements.each(function(iEdit,eEdit) {
+                let $editElement = $(eEdit);
+                let $rows = $editElement.find(".row");
+    
+                $rows.each(function(iRow, eRow) {
+                    let $row = $(eRow);
+    
+                    setupRow($row);
+                });
+            });
+
         });
+
+        return {
+            "element": this,
+            "getHtml": getHtml
+        };
     };
 })(jQuery);

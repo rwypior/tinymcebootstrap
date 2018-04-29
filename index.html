@@ -8,21 +8,31 @@
         <script type="text/javascript" src='js/jquery-3.3.1.min.js'></script>
         <script type="text/javascript" src='js/tinymce/tinymce.min.js'></script>
         <script type="text/javascript" src='js/bootstrap.min.js'></script>
-        <script type="text/javascript" src='js/main.js'></script>
+        <script type="text/javascript" src='js/bootstrapedit.min.js'></script>
 
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/main.grid.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrapedit.min.css">
+        <link rel="stylesheet" href="css/bootstrapedit.grid.min.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
 
         <script type="text/javascript">
             $(document).ready(function() {
-                $("[data-role=bootstrap-edit]").bootstrapeditor();
+                var editor = $("[data-role=bootstrap-edit]").bootstrapeditor({
+                    lang: "js/bootstrapedit-en.json"
+                });
+
+                console.log(editor.getHtml());
             });
         </script>
     </head>
     <body>
-    <i class="fas fa-plus-circle"></i>
+        <div class="container" style="margin-top: 64px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>Editable content</h1>
+                </div>
+            </div>
+        </div>
 
         <div data-role="bootstrap-edit">
             <div class="container">
